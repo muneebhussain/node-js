@@ -29,7 +29,7 @@ steps:
     args:
       - apply
       - '--filename=gs://nodejs-test123/ouput/expanded/*'
-      - '--namespace=staging'
+      - '--namespace=nodejs'
       - '--cluster=cluster-1'
       - '--location=us-central1-c'
     id: Deploy Account Service in K8s
