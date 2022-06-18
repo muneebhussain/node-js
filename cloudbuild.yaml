@@ -1,4 +1,10 @@
 steps:
+  - name: gcr.io/cloud-builders/npm
+    args:
+      - isntall
+      #- '-t'
+      #- 'gcr.io/marshad-sc-lab/nodejs:$SHORT_SHA'
+      #- .
   # This step builds the container image.
   - name: gcr.io/cloud-builders/docker
     args:
