@@ -1,0 +1,35 @@
+steps:
+  # This step builds the container image.
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - '-t'
+      - 'gcr.io/marshad-sc-lab/nodejs:$SHORT_SHA'
+      - .
+    # This step pushes the image to Artifact Registry
+    id: build Step
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - 'gcr.io/marshad-sc-lab/nodejs:$SHORT_SHA'
+    id: push Step
+  - name: gcr.io/cloud-builders/gke-deploy
+    args:
+      - prepare
+      - '--filename=deployment.yaml'
+      - '--image=gcr.io/marshad-sc-lab/nodejs:$SHORT_SHA'
+      - '--app=nodejs'
+      - '--version=$SHORT_SHA'
+      - '--namespace=nodejs'
+      - '--output=gs://nodejs-test123/ouput'
+      - '--annotation=gcb-build-id=$BUILD_ID'
+    # Deploying the Build to K8s
+    id: Deploying Build
+  - name: gcr.io/cloud-builders/gke-deploy
+    args:
+      - apply
+      - '--filename=gs://nodejs-test123/ouput/expanded/*'
+      - '--namespace=staging'
+      - '--cluster=cluster-1'
+      - '--location=us-central1-c'
+    id: Deploy Account Service in K8s
